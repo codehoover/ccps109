@@ -1,0 +1,409 @@
+import itertools
+import collections
+import math
+
+
+#CCPS 109 LABS
+
+#NUMBER 1
+
+def ryerson_letter_grade(pct): 
+    
+    if pct>=0 and pct<=49:
+        return('F')
+    elif pct>=50 and pct<=52:
+        return('D-')
+    elif(pct>=53 and pct<=56):
+        return('D')
+    elif(pct>=57 and pct<=59):
+        return('D+')
+    elif(pct>=60 and pct<=62):
+        return('C-')
+    elif(pct>=63 and pct<=66):
+        return('C')
+    elif(pct>=67 and pct<=69):
+        return('C+')
+    elif(pct>=70 and pct<=72):
+        return('B-')
+    elif(pct>=73 and pct<=76):
+        return('B')
+    elif(pct>=77 and pct<=79):
+        return('B+')
+    elif(pct>=80 and pct<=84):
+        return('A-')
+    elif(pct>=85 and pct<=89):
+        return('A')
+    elif(pct>=90 and pct<=150):
+        return('A+')
+    elif(pct>150):
+        return('not in range')
+
+#NUMBER 2
+
+def is_ascending(items):
+    for i in range(len(items) - 1):
+        if items[i] > items[i+1]: 
+            return False
+    return True 
+
+#NUMBER 3
+
+def scrabble_score(word,multipliers):
+    
+    score = {"a": 1, "c": 3, "b": 3, "e": 1, "d": 2, "g": 2, 
+         "f": 4, "i": 1, "h": 4, "k": 5, "j": 8, "m": 3, 
+         "l": 1, "o": 1, "n": 1, "q": 10, "p": 3, "s": 1, 
+         "r": 1, "u": 1, "t": 1, "w": 4, "v": 4, "y": 4, 
+         "x": 8, "z": 10}
+    
+    total = 0 #counter
+    list1 = []
+    for x in word:
+        list_app = score[x.lower()]
+        total += score[x.lower()]
+        list1.append(list_app)
+        
+    list3 = [a * b for a, b in zip(list1, multipliers)]
+    
+    tot_mult = sum(list3)
+            
+    return word,multipliers,tot_mult  
+
+
+#NUMBER 7
+    
+def expand_intervals(intervals):
+    r = []
+    for i in intervals.split(','):
+        if '-' not in i:
+            r.append(int(i))
+        else:
+            l,h = map(int, i.split('-'))
+            r+= range(l,h+1)
+    return r
+
+
+def collapse_intervals(items):
+    pre_num = min(items) if items else None
+    pagelist = list()
+
+    for number in sorted(items):
+        if number != pre_num+1:
+            pagelist.append([number])
+        elif len(pagelist[-1]) > 1:
+            pagelist[-1][-1] = number
+        else:
+            pagelist[-1].append(number)
+        pre_num = number
+
+    return ','.join(['-'.join(map(str,page)) for page in pagelist])
+
+    
+#NUMBER 8
+    
+def count_consecutive_summers(n):
+      
+    count = 1
+    j = 1
+    while( j * (j + 1) < 2 * n): 
+        a = (1.0 * n - (j * (j + 1) ) / 2) / (j + 1) 
+        if (a - int(a) == 0.0): 
+            count += 1
+        j += 1
+    return count 
+
+#NUMBER 10
+    
+def group_equal(items):
+    new_list = []
+    for value in items:
+        if new_list and new_list[-1][0] == value:
+            new_list[-1].append(value)
+        else:
+            new_list.append([value])
+    return new_list
+
+#NUMBER 11
+    
+def only_odd_digits(n):
+    
+    n1 = list(map(int, str(n)))
+    res = all(x%2 == 1 for x in n1)
+    return(res)
+ 
+
+def detab(text, n=8, sub=' '):
+    while True:
+        tab_index = text.find('\t')
+
+        if tab_index == -1:
+            break
+
+        text = text.replace('\t', (n - n % tab_index) * sub, 1)
+
+    return text
+
+    
+#NUMBER 12
+def first_missing_positive(items):
+    
+    mis_pos = min(set(range(1, len(items) + 2)) - set(items))
+    return(mis_pos)
+
+#NUMBER 13
+def three_summers(items, goal):
+    goalDifference = float("inf")
+    dl = -1
+    dr = -1
+    dx = -1
+
+    for x in range(len(items)-1):
+
+        left = x+1
+        right = len(items)-1
+
+        while (left < right):
+            if(abs(goal - (items[left] + items[right] + items[x])) < goalDifference):
+                dl = left
+                dr = right
+                dx = x
+
+            tmp = items[left] + items[right] + items[x]
+
+            if tmp > goal:
+                right -= 1
+            elif tmp < goal:
+                left += 1
+            else:
+                return True
+    # if no match is found, return the closest set
+    return False
+
+#NUMBER 9
+
+def count_and_say(digits):
+    cnt = 0       
+    ele = digits[0]    
+    rv = []       
+    for c in digits:   
+        if c == ele:  
+            cnt +=1       
+        else:
+            rv.append( (ele,cnt) )
+            cnt = 1       
+            ele = c       
+
+    rv.append( (ele,cnt) ) 
+    return ''.join( "{}{}".format(nr,charac) for charac,nr in rv)
+
+#number 10
+    
+def double_until_all_digits(n, giveup=1000):
+    for i in range(giveup):
+        if set(list('0123456789')).issubset(list(str(n))):
+            return i
+
+        n *= 2
+
+    return -1
+
+#number 11
+def create_zigzag(rows, cols, start=1):
+    zig = []
+
+    for row in range(rows):
+        begin = start + row * cols
+        end = begin + cols
+        r = list(range(begin, end))
+
+        zig.append(r if row % 2 == 0 else r[::-1])
+
+    return zig
+
+def reverse_ascending_sublists(items):
+
+    cur = 0
+
+    for i, item in enumerate(items):
+        if i + 1 >= len(items) or item >= items[i + 1]:
+            items[cur:i + 1] = items[cur:i + 1][::-1]
+            cur = i + 1
+
+    return items
+
+
+def hand_is_badugi(hand):
+    all_items = [item for card in hand for item in card]
+
+    return len(set(all_items)) == len(all_items)
+
+def frequency_sort(elems):
+    counter = collections.Counter(elems)
+    fin = sorted(elems,key=lambda x: (counter [x],-x),reverse=True)
+    return (fin)
+
+def prime_factors(n):
+    i = 2
+    factors = []
+    while i * i <= n:
+        if n % i:
+            i += 1
+        else:
+            n //= i
+            factors.append(i)
+    if n > 1:
+        factors.append(n)
+    return factors
+
+def flatten(items):
+    if isinstance(items, collections.Iterable):
+        return [a for i in items for a in flatten(i)]
+    else:
+        return [items]
+
+
+def josephus(n, k):
+    ls = list(range(1,n+1))
+    k -= 1 
+    idx = k
+    kll =[]
+    while len(ls) > 1:
+        kll.append(ls.pop(idx)) 
+        idx = (idx + k) % len(ls)
+    return(kll+ls)
+
+
+def longest_palindrome(text):
+    lp, lp_len = '', 0
+    for start, stop in itertools.combinations(range(len(text)+1), 2):
+        ss = text[start:stop]  # substring
+        if (len(ss) > lp_len) and (ss == ss[::-1]):
+            lp, lp_len = ss, len(ss)
+    return lp
+
+
+def riffle(items):
+
+    cut = len(items) // 2
+    items, sec_items = items[:cut], items[cut:]
+    for index, item in enumerate(sec_items):
+        insert_index = index*2 + 1
+        items.insert(insert_index, item)
+    return items
+
+
+def reverse_vowels(text):
+    vowels = "aeiou"
+    string = list(text)
+    i = 0
+    j = len(text)-1
+
+    while i < j:
+        if string[i].lower() not in vowels:
+            i += 1
+        elif string[j].lower() not in vowels:
+            j -= 1
+        else:
+            string[i], string[j] = string[j], string[i]
+            i += 1
+            j -= 1
+
+    return "".join(string)
+
+
+def is_perfect_power(n) : 
+    if (n==1)  : 
+        return True
+    for x in range(2,(int)(math.sqrt(n))+1) : 
+        y = 2
+        p = (int)(math.pow(x, y)) 
+        while (p<=n and p>0) : 
+            if (p==n) : 
+                return True
+            y = y + 1
+            p = math.pow(x, y) 
+    return False
+
+
+def running_median_of_three(items):
+    the_median = []
+    for i in range(len(items)):
+        if i < 2:
+            the_median.append(items[i])
+        else:
+            if (items[i - 2] <= items[i - 1] <= items[i]) or (items[i] <= items[i - 1] <= items[i - 2]):
+                median = items[i - 1]
+            elif (items[i - 2] <= items[i] <= items[i - 1]) or (items[i - 1] <= items[i] <= items[i - 2]):
+                median = items[i]
+            else:
+                median = items[i - 2]
+            the_median.append(median)
+    return the_median
+
+
+
+def maximum_difference_sublist(items, k=2):
+    diff = 0
+    l = []
+    for i in range(len(items)-k+1):
+        t = items[i:i+k]
+        d = max(t)-min(t)
+        if diff<d or len(l)==0:
+            diff = d
+            l = items[i:i+k]
+    return l
+
+
+def postfix_evaluate(items):
+    stack = []
+    for a in items:
+        if type(a) is int:
+            stack.append(a)
+            continue
+
+        op1 = stack.pop()
+        op2 = stack.pop()
+
+        if a == '+':
+            stack.append(op2 + op1)
+        elif a == '-':
+            stack.append(op2 - op1)
+        elif a == '*':
+            stack.append(op2 * op1)
+        elif a == '/':
+            if op1!=0:
+                stack.append(op2 // op1)
+            else:
+                stack.append(0)
+    return stack.pop()
+
+def is_permutation(items,n):
+    a = list(range(1,n+1))
+    return(set(items)==set(a))
+ 
+def all_cyclic_shifts(text):
+
+    cyclic_shifts = []
+    hold = text
+    for i in range(len(text)):
+        
+        hold = hold[1:] + hold[0]
+        if hold not in cyclic_shifts:
+
+            cyclic_shifts.append(hold)           
+    cyclic_shifts.sort()
+
+    return cyclic_shifts
+
+def disemvowel(text):
+    import re
+    text = re.split('(?<=[aeiou]{1})[y]|[y](?=[aeiou]{1})|[aeiou]+', text)
+    return ''.join(text)
+
+
+def first_preceded_by_smaller(items, k=1):
+
+    for i in range(len(items)):
+        if sorted(items[0:i+1]).index(items[i]) >= k:
+            return items[i]
+    return None
